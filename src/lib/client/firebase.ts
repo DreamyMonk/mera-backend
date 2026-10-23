@@ -35,7 +35,10 @@ export async function api<T = Record<string, unknown>>(path: string, init: Reque
     headers: { "content-type": "application/json", ...(token ? { authorization: `Bearer ${token}` } : {}), ...init.headers },
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw Object.assign(new Error(data?.error?.message || `Request failed (${res.status})`), { code: data?.error?.type, status: res.status });
+  if (!res.ok) {
+    const message = data?.error?.message || `The Mira server had a problem (error ${res.status}). Please try again; if it keeps happening, check the server logs.`;
+    throw Object.assign(new Error(message), { code: data?.error?.type, status: res.status });
+  }
   return data as T;
 }
 

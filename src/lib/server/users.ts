@@ -24,9 +24,10 @@ export async function requireUser(req: Request, { allowBlocked = false } = {}): 
   const token = header.startsWith("Bearer ") ? header.slice(7) : "";
   if (!token) throw new HttpError(401, "authentication_error", "Please sign in to Mira.");
 
+  const auth = adminAuth(); // outside the try: server setup errors must not look like an expired session
   let decoded;
   try {
-    decoded = await adminAuth().verifyIdToken(token);
+    decoded = await auth.verifyIdToken(token);
   } catch {
     throw new HttpError(401, "authentication_error", "Your session expired. Please sign in again.");
   }
