@@ -25,6 +25,8 @@ const FRIENDLY: Record<string, string> = {
   "auth/user-disabled": "This account has been blocked. Contact support if you think this is a mistake.",
   "auth/popup-closed-by-user": "The Google window was closed before signing in.",
   "auth/too-many-requests": "Too many attempts. Wait a minute and try again.",
+  "auth/operation-not-allowed": "This sign-in method isn't turned on yet. (Admin: enable it in Firebase → Authentication → Sign-in method.)",
+  "auth/unauthorized-domain": "This website isn't allowed to sign in yet. (Admin: add it in Firebase → Authentication → Settings → Authorized domains.)",
 };
 
 function message(err: unknown) {
