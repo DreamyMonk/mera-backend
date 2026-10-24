@@ -1,11 +1,11 @@
 "use client";
 
 import { Suspense, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -42,11 +42,10 @@ function LoginForm() {
   const next = params.get("next");
   const [mode, setMode] = useState<"signin" | "signup">(params.get("mode") === "signup" ? "signup" : "signin");
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(params.get("email") || "");
   const [password, setPassword] = useState("");
-  const [busy, setBusy] = useState<"" | "google" | "email" | "reset">("");
+  const [busy, setBusy] = useState<"" | "google" | "email">("");
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
   const [stage, setStage] = useState(""); // what the sign-in is waiting on right now
   const user = useUser();
 
@@ -111,19 +110,6 @@ function LoginForm() {
       setBusy("");
       setStage("");
     }
-  }
-
-  async function reset() {
-    setError("");
-    if (!email.trim()) return setError("Enter your email first, then click 'Forgot password?'.");
-    setBusy("reset");
-    try {
-      await sendPasswordResetEmail(auth(), email.trim());
-      setNotice("Check your inbox for a link to reset your password.");
-    } catch (err) {
-      setError(message(err));
-    }
-    setBusy("");
   }
 
   const signup = mode === "signup";
@@ -197,12 +183,11 @@ function LoginForm() {
               />
             </Field>
             {!signup && (
-              <button type="button" onClick={reset} className="-mt-2 self-end text-xs font-medium text-blue-700 hover:underline" disabled={!!busy}>
+              <Link href={`/forgot-password${email.trim() ? `?email=${encodeURIComponent(email.trim())}` : ""}`} className="-mt-2 self-end text-xs font-medium text-blue-700 hover:underline">
                 Forgot password?
-              </button>
+              </Link>
             )}
             {error && <Alert>{error}</Alert>}
-            {notice && <Alert tone="success">{notice}</Alert>}
             <Button type="submit" busy={busy === "email"} disabled={!!busy}>
               {signup ? "Create account" : "Sign in"}
             </Button>

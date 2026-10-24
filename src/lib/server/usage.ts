@@ -1,6 +1,8 @@
 import "server-only";
 import { db, FieldValue } from "./firebase";
 import { HttpError } from "./http";
+import { sendInBackground } from "./email/send";
+import { usageAlert } from "./email/templates";
 import type { Plan, Usage, UserProfile } from "../shared/types";
 
 export const monthKey = (d = new Date()) => d.toISOString().slice(0, 7);
@@ -50,7 +52,32 @@ export async function assertQuota(user: UserProfile, plan: Plan) {
   }
 }
 
-export async function recordUsage(uid: string, model: string, t: TokenCounts) {
+// After recording usage, emails the user once per month as they cross 50%,
+// 90% and 100% of their allowance. A transaction marks each level so parallel
+// requests never send the same alert twice; if usage jumps past several
+// levels at once, only the highest is emailed.
+const ALERT_LEVELS = [50, 90, 100] as const;
+
+async function usageAlerts(user: UserProfile, plan: Plan | null) {
+  const quota = quotaUsd(user, plan);
+  if (quota <= 0 || !user.email) return;
+  const ref = db().collection("users").doc(user.uid).collection("usage").doc(monthKey());
+  const { level, used } = await db().runTransaction(async (tx) => {
+    const data = (await tx.get(ref)).data() || {};
+    const usedUsd = (data.costMicros || 0) / 1_000_000;
+    const sent: Record<string, boolean> = data.alerts || {};
+    const crossed = ALERT_LEVELS.filter((l) => usedUsd >= (quota * l) / 100 && !sent[l]);
+    if (!crossed.length) return { level: null, used: usedUsd };
+    tx.set(ref, { alerts: { ...sent, ...Object.fromEntries(crossed.map((l) => [l, true])) } }, { merge: true });
+    return { level: crossed[crossed.length - 1], used: usedUsd };
+  });
+  if (level) {
+    await sendInBackground(user.email, usageAlert({ name: user.name, to: user.email, pct: level, usedUsd: used, quotaUsd: quota, plan: plan?.name || "Free" }));
+  }
+}
+
+export async function recordUsage(user: UserProfile, plan: Plan | null, model: string, t: TokenCounts) {
+  const uid = user.uid;
   const cost = costMicros(model, t);
   const month = monthKey();
   const inc = {
@@ -66,6 +93,7 @@ export async function recordUsage(uid: string, model: string, t: TokenCounts) {
   batch.set(db().collection("stats").doc(month), { costMicros: inc.costMicros, requests: inc.requests }, { merge: true });
   batch.update(db().collection("users").doc(uid), { lastActiveAt: FieldValue.serverTimestamp() });
   await batch.commit();
+  await usageAlerts(user, plan).catch((err) => console.error("usage alert", err));
 }
 
 // Reads token counts out of a streamed (SSE) Messages API response as it passes through.

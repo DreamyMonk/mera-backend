@@ -10,6 +10,7 @@ const NAV = [
   ["/admin", "Overview"],
   ["/admin/users", "Users"],
   ["/admin/plans", "Plans"],
+  ["/admin/emails", "Emails"],
   ["/admin/settings", "Settings"],
 ];
 

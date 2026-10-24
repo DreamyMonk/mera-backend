@@ -21,11 +21,13 @@ function PlanPicker() {
     if (!user) return;
     Promise.all([api<{ plans: Plan[] }>("/api/plans"), api<Me>("/api/me")])
       .then(([p, me]) => {
+        // Email verification or 2-step comes before choosing a plan.
+        if (me.pending) return router.replace(`/verify?step=${me.pending}&next=${encodeURIComponent(`/plans?next=${encodeURIComponent(next)}`)}`);
         setPlans(p.plans);
         setCurrent(me.user.planId);
       })
       .catch((err) => setError(err.message));
-  }, [user]);
+  }, [user, router, next]);
 
   async function choose(plan: Plan) {
     setError("");

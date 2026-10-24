@@ -25,7 +25,12 @@ export type UserProfile = {
   quotaOverrideUsd: number | null;
   createdAt: number;
   lastActiveAt: number;
+  emailVerified: boolean;
+  twoFactor: boolean; // 2-step verification: a code by email on each new sign-in
 };
+
+// What the current sign-in still has to do before it can use the account.
+export type PendingStep = "verify_email" | "two_factor" | null;
 
 export type Usage = {
   month: string; // YYYY-MM

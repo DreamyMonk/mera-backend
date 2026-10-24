@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Alert, Brand, Button, Card, MiraLogo, PageShell, Spinner } from "@/components/ui";
 import { api } from "@/lib/client/firebase";
 import { useSignedIn } from "@/lib/client/use-signed-in";
-import type { Me } from "@/lib/client/after-login";
+import { routeFor, type Me } from "@/lib/client/after-login";
 
 type ChromeRuntime = { sendMessage: (id: string, msg: unknown, cb: (res: unknown) => void) => void; lastError?: { message: string } };
 declare global {
@@ -57,7 +57,7 @@ function Connect() {
   useEffect(() => {
     if (!user) return;
     api<Me>("/api/me")
-      .then((data) => (data.plan ? setMe(data) : router.replace(`/plans?next=${encodeURIComponent(here)}`)))
+      .then((data) => (routeFor(data, here) === here ? setMe(data) : router.replace(routeFor(data, here))))
       .catch((err) => setError(err.message));
   }, [user, router, here]);
 

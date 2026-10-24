@@ -71,7 +71,7 @@ export async function POST(req: Request) {
             meter.push(chunk);
           },
           async flush() {
-            await recordUsage(user.uid, model, meter.counts()).catch((e) => console.error("usage", e));
+            await recordUsage(user, plan, model, meter.counts()).catch((e) => console.error("usage", e));
           },
         })
       );
@@ -84,7 +84,7 @@ export async function POST(req: Request) {
     const data = await upstream.json();
     const meter = usageMeter();
     meter.apply(data.usage);
-    await recordUsage(user.uid, model, meter.counts()).catch((e) => console.error("usage", e));
+    await recordUsage(user, plan, model, meter.counts()).catch((e) => console.error("usage", e));
     return Response.json(data, { status: upstream.status });
   } catch (err) {
     return errorResponse(err);
