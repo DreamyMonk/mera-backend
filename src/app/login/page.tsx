@@ -12,7 +12,9 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { Alert, Brand, Button, Card, Field, Input, OneAuthLogo, PageShell } from "@/components/ui";
-import { auth, firebaseConfigured } from "@/lib/client/firebase";
+import { auth, firebaseConfigured, useUser, withTimeout } from "@/lib/client/firebase";
+
+const GOOGLE_TIMEOUT_MS = 120_000;
 import { destinationAfterLogin } from "@/lib/client/after-login";
 
 const FRIENDLY: Record<string, string> = {
@@ -45,12 +47,16 @@ function LoginForm() {
   const [busy, setBusy] = useState<"" | "google" | "email" | "reset">("");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [stage, setStage] = useState(""); // what the sign-in is waiting on right now
+  const user = useUser();
 
   async function finish() {
+    setStage("Loading your account…");
     try {
       router.replace(await destinationAfterLogin(next));
     } catch (err) {
       await signOut(auth());
+      setStage("");
       throw err;
     }
   }
@@ -58,8 +64,25 @@ function LoginForm() {
   async function google() {
     setError("");
     setBusy("google");
+    setStage("Waiting for Google… finish signing in in the pop-up window.");
     try {
-      await signInWithPopup(auth(), new GoogleAuthProvider());
+      await withTimeout(
+        signInWithPopup(auth(), new GoogleAuthProvider()),
+        GOOGLE_TIMEOUT_MS,
+        "Google sign-in didn't finish. If the Google window is still open, close it and try again, or sign in with email."
+      );
+      await finish();
+    } catch (err) {
+      setError(message(err));
+      setBusy("");
+      setStage("");
+    }
+  }
+
+  async function continueAsCurrent() {
+    setError("");
+    setBusy("email");
+    try {
       await finish();
     } catch (err) {
       setError(message(err));
@@ -86,6 +109,7 @@ function LoginForm() {
     } catch (err) {
       setError(message(err));
       setBusy("");
+      setStage("");
     }
   }
 
@@ -120,6 +144,25 @@ function LoginForm() {
           </p>
 
           {!firebaseConfigured && <div className="mt-4"><Alert>Firebase isn&apos;t configured yet. Add the NEXT_PUBLIC_FIREBASE_* variables.</Alert></div>}
+
+          {stage && (
+            <div className="mt-5">
+              <Alert tone="info">{stage}</Alert>
+            </div>
+          )}
+
+          {/* Already signed in (e.g. came back to this page): no need to sign in again. */}
+          {user && !busy && (
+            <div className="mt-5 flex flex-col gap-2 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm">
+              <p>
+                You&apos;re signed in as <span className="font-semibold">{user.email}</span>.
+              </p>
+              <div className="flex gap-2">
+                <Button onClick={continueAsCurrent}>Continue</Button>
+                <Button variant="ghost" onClick={() => signOut(auth())}>Use another account</Button>
+              </div>
+            </div>
+          )}
 
           <Button variant="ghost" className="mt-6 w-full" onClick={google} busy={busy === "google"} disabled={!!busy}>
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden>

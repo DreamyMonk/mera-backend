@@ -46,7 +46,16 @@ function app(): AdminApp.App {
 }
 
 export const adminAuth = () => firebaseSdk().auth.getAuth(app());
-export const db = () => firebaseSdk().firestore.getFirestore(app());
+
+// Firestore over HTTPS (REST) instead of gRPC: much faster first requests on
+// serverless hosts like Vercel, where every cold start would set up gRPC again.
+let firestore: AdminFirestore.Firestore | null = null;
+export function db() {
+  if (firestore) return firestore;
+  firestore = firebaseSdk().firestore.getFirestore(app());
+  firestore.settings({ preferRest: true });
+  return firestore;
+}
 
 // The Firestore sentinels the routes use, loaded lazily like the rest.
 export const FieldValue = {

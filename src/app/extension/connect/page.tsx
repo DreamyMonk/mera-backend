@@ -20,13 +20,26 @@ function extensionId(param: string | null) {
   return process.env.NEXT_PUBLIC_EXTENSION_ID || param || "";
 }
 
+// Hands the sign-in token to the extension. Failures say exactly what went
+// wrong: no extension listening, the wrong extension id, or the extension's
+// own sign-in error.
 function sendToExtension(id: string, token: string): Promise<void> {
   return new Promise((resolve, reject) => {
     const runtime = window.chrome?.runtime;
-    if (!runtime?.sendMessage) return reject(new Error("not-installed"));
+    if (!runtime?.sendMessage) {
+      return reject(Object.assign(new Error("Chrome didn't find the Mira extension on this page. Make sure Mira is installed, turned on and reloaded in chrome://extensions, then reload this page."), { missing: true }));
+    }
+    const timer = setTimeout(() => reject(new Error("The Mira extension didn't answer. Reload it in chrome://extensions and try again.")), 20_000);
     runtime.sendMessage(id, { type: "mira-auth", token }, (res) => {
-      if (runtime.lastError || !(res as { ok?: boolean })?.ok) reject(new Error("not-installed"));
-      else resolve();
+      clearTimeout(timer);
+      const reply = res as { ok?: boolean; error?: string } | undefined;
+      if (runtime.lastError) {
+        reject(Object.assign(new Error(`Couldn't reach the Mira extension with id ${id} (${runtime.lastError.message}). Open this page from the "Sign in" button in Mira's side panel.`), { missing: true }));
+      } else if (!reply?.ok) {
+        reject(new Error(`The Mira extension couldn't sign in: ${reply?.error || "no reason given"}.`));
+      } else {
+        resolve();
+      }
     });
   });
 }
@@ -56,11 +69,8 @@ function Connect() {
       await sendToExtension(ext, token);
       setState("done");
     } catch (err) {
-      if ((err as Error).message === "not-installed") setState("missing");
-      else {
-        setError((err as Error).message);
-        setState("idle");
-      }
+      setError((err as Error).message);
+      setState((err as { missing?: boolean }).missing ? "missing" : "idle");
     }
   }
 
@@ -87,15 +97,11 @@ function Connect() {
               <p className="mt-2 text-zinc-600">
                 The Mira extension will be signed in as <span className="font-semibold text-zinc-900">{me.user.email}</span> on the {me.plan?.name} plan.
               </p>
-              {state === "missing" && (
+              {error && (
                 <div className="mt-5 text-left">
-                  <Alert tone="info">
-                    We couldn&apos;t reach the Mira extension. Make sure it&apos;s installed and turned on in Chrome, then open this page from the
-                    &quot;Sign in&quot; button in Mira&apos;s side panel.
-                  </Alert>
+                  <Alert tone={state === "missing" ? "info" : "error"}>{error}</Alert>
                 </div>
               )}
-              {error && <div className="mt-5 text-left"><Alert>{error}</Alert></div>}
               <Button className="mt-6 w-full" onClick={connect} busy={state === "busy"} disabled={!ext}>
                 Connect extension
               </Button>
