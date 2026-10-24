@@ -14,7 +14,7 @@ export default function Overview() {
   }, []);
 
   if (error) return <Alert>{error}</Alert>;
-  if (!stats) return <div className="text-violet-600"><Spinner /></div>;
+  if (!stats) return <div className="text-blue-600"><Spinner /></div>;
 
   const tiles = [
     ["Users", stats.users.toLocaleString()],

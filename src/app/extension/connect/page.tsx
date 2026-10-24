@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Alert, Brand, Button, Card, Logo, PageShell, Spinner } from "@/components/ui";
+import { Alert, Brand, Button, Card, MiraLogo, PageShell, Spinner } from "@/components/ui";
 import { api } from "@/lib/client/firebase";
 import { useSignedIn } from "@/lib/client/use-signed-in";
 import type { Me } from "@/lib/client/after-login";
@@ -72,10 +72,10 @@ function Connect() {
       <main className="flex flex-1 items-center justify-center py-10">
         <Card className="w-full max-w-md text-center">
           <div className="flex justify-center">
-            <Logo size={56} />
+            <MiraLogo size={88} />
           </div>
           {!me ? (
-            <div className="mt-6 flex justify-center text-violet-600">{error ? <Alert>{error}</Alert> : <Spinner />}</div>
+            <div className="mt-6 flex justify-center text-blue-600">{error ? <Alert>{error}</Alert> : <Spinner />}</div>
           ) : state === "done" ? (
             <>
               <h1 className="mt-5 text-2xl font-bold">You&apos;re connected 🎉</h1>

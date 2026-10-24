@@ -49,7 +49,7 @@ function PlanPicker() {
         <p className="mt-2 text-zinc-500">You can change it any time.</p>
         {error && <div className="mt-6 w-full max-w-md"><Alert>{error}</Alert></div>}
         {!plans ? (
-          <div className="mt-16 text-violet-600"><Spinner /></div>
+          <div className="mt-16 text-blue-600"><Spinner /></div>
         ) : (
           <div className="mt-10 grid w-full gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {plans.map((plan) => {
@@ -58,7 +58,7 @@ function PlanPicker() {
               return (
                 <div
                   key={plan.id}
-                  className={`flex flex-col rounded-2xl border bg-white p-6 shadow-sm ${plan.isDefault ? "border-violet-400 ring-4 ring-violet-100" : "border-zinc-200"}`}
+                  className={`flex flex-col rounded-2xl border bg-white p-6 shadow-sm ${plan.isDefault ? "border-blue-400 ring-4 ring-blue-100" : "border-zinc-200"}`}
                 >
                   <div className="flex items-center justify-between">
                     <h2 className="text-lg font-semibold">{plan.name}</h2>

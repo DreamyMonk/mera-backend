@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Brand, PageShell } from "@/components/ui";
+import { Brand, MiraLogo, OneAuthLogo, PageShell } from "@/components/ui";
 import { useUser } from "@/lib/client/firebase";
 
-const FEATURES = [
-  ["Sees your dashboards", "Mira reads any store admin, ad manager or marketplace, so there's nothing to connect."],
-  ["Acts for you", "It clicks, types and fills in forms. You choose whether it asks first or works on its own."],
-  ["Thinks like a co-founder", "It spots problems on its own, remembers your goals and checks in every morning."],
+const MIRA_FEATURES = [
+  ["Sees your dashboards", "Reads any store admin, ad manager or marketplace, so there's nothing to connect."],
+  ["Acts for you", "Clicks, types and fills in forms. You choose whether it asks first or works on its own."],
+  ["Thinks like a co-founder", "Spots problems on its own, remembers your goals and runs Autopilot checks for you."],
 ];
 
 export default function Home() {
@@ -27,16 +27,14 @@ export default function Home() {
         )}
       </header>
 
-      <main className="flex flex-1 flex-col items-center justify-center py-16 text-center">
-        <span className="mb-5 rounded-full bg-violet-100 px-3 py-1 text-xs font-semibold text-violet-700">Chrome extension</span>
-        <h1 className="max-w-2xl text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl">Your AI co-founder, right in your browser</h1>
-        <p className="mt-4 max-w-xl text-lg text-zinc-600">
-          Mira helps you run and grow your online store: it reads your dashboards, fixes what&apos;s wrong and tells you what to do next.
-        </p>
+      <main className="flex flex-1 flex-col items-center justify-center py-14 text-center">
+        <OneAuthLogo width={220} />
+        <h1 className="mt-8 max-w-2xl text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">One secure account for every dreamymonk app</h1>
+        <p className="mt-3 max-w-xl text-lg text-zinc-600">Sign in once with Google or email, and use it for Mira and everything else we build.</p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link
             href={user ? "/account" : "/login?mode=signup"}
-            className="rounded-xl bg-gradient-to-br from-[#6d5dfc] to-[#c056f2] px-6 py-3 font-semibold text-white shadow-lg shadow-violet-500/30"
+            className="rounded-xl bg-gradient-to-br from-[#2f80ff] to-[#0b47d1] px-6 py-3 font-semibold text-white shadow-lg shadow-blue-500/30"
           >
             {user ? "Go to my account" : "Create a free account"}
           </Link>
@@ -47,14 +45,23 @@ export default function Home() {
           )}
         </div>
 
-        <div className="mt-16 grid w-full gap-4 text-left sm:grid-cols-3">
-          {FEATURES.map(([title, body]) => (
-            <div key={title} className="rounded-2xl border border-zinc-200 bg-white/80 p-5">
-              <h3 className="font-semibold text-zinc-900">{title}</h3>
-              <p className="mt-1.5 text-sm text-zinc-600">{body}</p>
+        <section className="mt-16 w-full rounded-3xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white p-6 text-left sm:p-8">
+          <div className="flex items-center gap-4">
+            <MiraLogo size={64} />
+            <div>
+              <p className="text-xs font-semibold tracking-wide text-amber-700 uppercase">Chrome extension</p>
+              <h2 className="text-xl font-bold text-zinc-900">Mira, your AI co-founder in the browser</h2>
             </div>
-          ))}
-        </div>
+          </div>
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            {MIRA_FEATURES.map(([title, body]) => (
+              <div key={title} className="rounded-2xl border border-zinc-200 bg-white/80 p-5">
+                <h3 className="font-semibold text-zinc-900">{title}</h3>
+                <p className="mt-1.5 text-sm text-zinc-600">{body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
       </main>
     </PageShell>
   );

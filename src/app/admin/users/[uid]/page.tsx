@@ -52,7 +52,7 @@ export default function UserDetail() {
     setBusy("");
   }
 
-  if (!data) return error ? <Alert>{error}</Alert> : <div className="text-violet-600"><Spinner /></div>;
+  if (!data) return error ? <Alert>{error}</Alert> : <div className="text-blue-600"><Spinner /></div>;
   const { user } = data;
   const blocked = user.status === "blocked";
   const thisMonth = data.usage.find((u) => u.month === new Date().toISOString().slice(0, 7));
@@ -60,7 +60,7 @@ export default function UserDetail() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <Link href="/admin/users" className="text-sm text-violet-700 hover:underline">← All users</Link>
+        <Link href="/admin/users" className="text-sm text-blue-700 hover:underline">← All users</Link>
         <div className="mt-2 flex flex-wrap items-center gap-3">
           <h1 className="text-2xl font-bold tracking-tight">{user.name || user.email}</h1>
           {blocked ? <Badge tone="bad">Blocked</Badge> : <Badge tone="good">Active</Badge>}
@@ -127,7 +127,7 @@ export default function UserDetail() {
           <ul className="mt-3 divide-y divide-zinc-100">
             {data.chats.map((c) => (
               <li key={c.id}>
-                <Link href={`/admin/users/${uid}/chats/${c.id}`} className="flex items-start justify-between gap-4 py-3 hover:text-violet-700">
+                <Link href={`/admin/users/${uid}/chats/${c.id}`} className="flex items-start justify-between gap-4 py-3 hover:text-blue-700">
                   <div className="min-w-0">
                     <p className="truncate font-medium">{c.title}</p>
                     <p className="truncate text-sm text-zinc-500">{c.preview || "No reply yet"}</p>
@@ -167,7 +167,7 @@ export default function UserDetail() {
                   <p className="mt-0.5 text-sm whitespace-pre-wrap text-zinc-500">{b.about || "No description."}</p>
                   {b.notes.length > 0 && (
                     <details className="mt-2 text-sm">
-                      <summary className="cursor-pointer text-violet-700">{b.notes.length} memory notes</summary>
+                      <summary className="cursor-pointer text-blue-700">{b.notes.length} memory notes</summary>
                       <ul className="mt-2 flex flex-col gap-1.5">
                         {b.notes.map((n) => (
                           <li key={n.id} className="text-zinc-600">

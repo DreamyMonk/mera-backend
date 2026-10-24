@@ -35,7 +35,7 @@ export default function SettingsPage() {
     setBusy(false);
   }
 
-  if (!settings) return msg ? <Alert>{msg.text}</Alert> : <div className="text-violet-600"><Spinner /></div>;
+  if (!settings) return msg ? <Alert>{msg.text}</Alert> : <div className="text-blue-600"><Spinner /></div>;
 
   return (
     <div className="flex max-w-2xl flex-col gap-6">
@@ -50,7 +50,7 @@ export default function SettingsPage() {
           </Field>
           <div className="flex flex-wrap gap-2">
             {SUGGESTED.map((m) => (
-              <button key={m} onClick={() => setModel(m)} className="rounded-full border border-zinc-200 px-3 py-1 text-xs hover:border-violet-400">
+              <button key={m} onClick={() => setModel(m)} className="rounded-full border border-zinc-200 px-3 py-1 text-xs hover:border-blue-400">
                 {m}
               </button>
             ))}

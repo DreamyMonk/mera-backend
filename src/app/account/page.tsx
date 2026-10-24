@@ -111,7 +111,7 @@ export default function AccountPage() {
   if (!me) {
     return (
       <PageShell>
-        <div className="flex flex-1 items-center justify-center text-violet-600">{error ? <Alert>{error}</Alert> : <Spinner />}</div>
+        <div className="flex flex-1 items-center justify-center text-blue-600">{error ? <Alert>{error}</Alert> : <Spinner />}</div>
       </PageShell>
     );
   }
@@ -172,17 +172,17 @@ export default function AccountPage() {
             <div className="mt-2">
               <UsageBar used={me.usage.usedUsd} quota={me.usage.quotaUsd} />
             </div>
-            <Link href="/plans?next=/account" className="mt-4 inline-block text-sm font-semibold text-violet-700 hover:underline">
+            <Link href="/plans?next=/account" className="mt-4 inline-block text-sm font-semibold text-blue-700 hover:underline">
               Change plan
             </Link>
           </Card>
 
-          <Card className="bg-gradient-to-br from-violet-50 to-white">
+          <Card className="bg-gradient-to-br from-blue-50 to-white">
             <h2 className="text-lg font-semibold">Chrome extension</h2>
             <p className="mt-1 text-sm text-zinc-600">Sign the Mira extension in to this account to start working with it.</p>
             <Link
               href="/extension/connect"
-              className="mt-4 inline-flex rounded-xl bg-gradient-to-br from-[#6d5dfc] to-[#c056f2] px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-violet-500/25"
+              className="mt-4 inline-flex rounded-xl bg-gradient-to-br from-[#2f80ff] to-[#0b47d1] px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/25"
             >
               Connect the extension
             </Link>

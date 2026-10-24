@@ -32,7 +32,7 @@ export default function Users() {
       </div>
       {error && <div className="mt-4"><Alert>{error}</Alert></div>}
       {!users ? (
-        <div className="mt-10 text-violet-600"><Spinner /></div>
+        <div className="mt-10 text-blue-600"><Spinner /></div>
       ) : (
         <div className="mt-6 overflow-x-auto rounded-2xl border border-zinc-200 bg-white">
           <table className="w-full text-left text-sm">
@@ -48,9 +48,9 @@ export default function Users() {
             </thead>
             <tbody className="divide-y divide-zinc-100">
               {shown.map((u) => (
-                <tr key={u.uid} className="hover:bg-violet-50/40">
+                <tr key={u.uid} className="hover:bg-blue-50/40">
                   <td className="px-4 py-3">
-                    <Link href={`/admin/users/${u.uid}`} className="font-semibold text-zinc-900 hover:text-violet-700">
+                    <Link href={`/admin/users/${u.uid}`} className="font-semibold text-zinc-900 hover:text-blue-700">
                       {u.name || u.email || u.uid}
                     </Link>
                     <p className="text-xs text-zinc-500">{u.email}</p>

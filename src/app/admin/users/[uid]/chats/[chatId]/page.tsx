@@ -12,7 +12,7 @@ type Chat = { id: string; title: string; createdAt: number; updatedAt: number; t
 function Item({ item }: { item: TranscriptItem }) {
   switch (item.kind) {
     case "user":
-      return <div className="ml-auto max-w-[80%] rounded-2xl rounded-br-md bg-gradient-to-br from-[#6d5dfc] to-[#c056f2] px-4 py-2.5 whitespace-pre-wrap text-white">{item.text}</div>;
+      return <div className="ml-auto max-w-[80%] rounded-2xl rounded-br-md bg-gradient-to-br from-[#2f80ff] to-[#0b47d1] px-4 py-2.5 whitespace-pre-wrap text-white">{item.text}</div>;
     case "assistant":
       return <div className="max-w-[90%] rounded-2xl rounded-bl-md border border-zinc-200 bg-white px-4 py-2.5 whitespace-pre-wrap">{item.text}</div>;
     case "step":
@@ -35,11 +35,11 @@ export default function ChatView() {
   }, [uid, chatId]);
 
   if (error) return <Alert>{error}</Alert>;
-  if (!chat) return <div className="text-violet-600"><Spinner /></div>;
+  if (!chat) return <div className="text-blue-600"><Spinner /></div>;
 
   return (
     <div className="mx-auto max-w-3xl">
-      <Link href={`/admin/users/${uid}`} className="text-sm text-violet-700 hover:underline">← Back to user</Link>
+      <Link href={`/admin/users/${uid}`} className="text-sm text-blue-700 hover:underline">← Back to user</Link>
       <h1 className="mt-2 text-2xl font-bold tracking-tight">{chat.title}</h1>
       <p className="text-sm text-zinc-500">
         Started {new Date(chat.createdAt).toLocaleString()} · updated {new Date(chat.updatedAt).toLocaleString()}

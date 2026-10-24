@@ -11,7 +11,7 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { Alert, Brand, Button, Card, Field, Input, PageShell } from "@/components/ui";
+import { Alert, Brand, Button, Card, Field, Input, OneAuthLogo, PageShell } from "@/components/ui";
 import { auth, firebaseConfigured } from "@/lib/client/firebase";
 import { destinationAfterLogin } from "@/lib/client/after-login";
 
@@ -111,8 +111,13 @@ function LoginForm() {
       </header>
       <main className="flex flex-1 items-center justify-center py-10">
         <Card className="w-full max-w-md">
-          <h1 className="text-2xl font-bold tracking-tight">{signup ? "Create your Mira account" : "Welcome back"}</h1>
-          <p className="mt-1 text-sm text-zinc-500">{signup ? "Free to start. No card needed." : "Sign in to continue to Mira."}</p>
+          <div className="mb-5 flex justify-center">
+            <OneAuthLogo width={150} />
+          </div>
+          <h1 className="text-center text-2xl font-bold tracking-tight">{signup ? "Create your OneAuth account" : "Sign in with OneAuth"}</h1>
+          <p className="mt-1 text-center text-sm text-zinc-500">
+            {signup ? "One account for Mira and every dreamymonk app. Free to start." : "One account for Mira and every dreamymonk app."}
+          </p>
 
           {!firebaseConfigured && <div className="mt-4"><Alert>Firebase isn&apos;t configured yet. Add the NEXT_PUBLIC_FIREBASE_* variables.</Alert></div>}
 
@@ -149,7 +154,7 @@ function LoginForm() {
               />
             </Field>
             {!signup && (
-              <button type="button" onClick={reset} className="-mt-2 self-end text-xs font-medium text-violet-700 hover:underline" disabled={!!busy}>
+              <button type="button" onClick={reset} className="-mt-2 self-end text-xs font-medium text-blue-700 hover:underline" disabled={!!busy}>
                 Forgot password?
               </button>
             )}
@@ -163,7 +168,7 @@ function LoginForm() {
           <p className="mt-6 text-center text-sm text-zinc-500">
             {signup ? "Already have an account?" : "New to Mira?"}{" "}
             <button
-              className="font-semibold text-violet-700 hover:underline"
+              className="font-semibold text-blue-700 hover:underline"
               onClick={() => {
                 setMode(signup ? "signin" : "signup");
                 setError("");

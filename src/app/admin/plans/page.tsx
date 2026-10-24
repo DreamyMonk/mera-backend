@@ -29,7 +29,7 @@ function PlanForm({ initial, onSaved, onCancel }: { initial: Draft; onSaved: () 
   }
 
   return (
-    <Card className="border-violet-300 ring-4 ring-violet-50">
+    <Card className="border-blue-300 ring-4 ring-blue-50">
       <h2 className="font-semibold">{plan.id ? `Edit ${initial.name}` : "New plan"}</h2>
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <Field label="Name"><Input value={plan.name} onChange={(e) => set("name", e.target.value)} maxLength={40} /></Field>
@@ -99,7 +99,7 @@ export default function Plans() {
         />
       )}
       {!plans ? (
-        <div className="text-violet-600"><Spinner /></div>
+        <div className="text-blue-600"><Spinner /></div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {plans.map((p) => (
